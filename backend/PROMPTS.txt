@@ -1,0 +1,90 @@
+PROMPTS.txt
+============
+Prompt used with Claude Code to generate this backend from scratch.
+
+
+I want to build a small Node.js REST API backend for a ticket marketplace demo app —
+something an Android/iOS client could hit to browse events, log in, buy tickets, and
+view a wallet of purchased tickets. It doesn't need a real database; everything can
+live in memory and reset on restart. Here's what I want it to do:
+
+Data model
+- Venues: id, name, and an image.
+- Events: id, title, description, start date/time, a venue, a list of ticket types,
+  and an image. Each ticket type has an id, a label (e.g. "GA", "VIP"), a price in
+  cents, a currency, and a quantity currently available.
+- Users: a small fixed set of seeded users (no registration) with id, first/last
+  name, age, username, and password.
+- A user has a shopping cart (line items referencing a ticket + a snapshot of its
+  event/price info), a wallet of purchased tickets after checkout, and optionally a
+  saved credit card number.
+- A purchased/wallet ticket has its own id, the label/price/currency it was bought
+  at, and a generated barcode (should be a properly checksummed EAN-13, i.e. a real
+  13-digit GS1 barcode, not a random string) — imagine it needs to actually scan.
+
+Behavior
+- Auth is a simple bearer-token session: logging in with a username/password
+  returns an opaque access token; that token is required on every protected
+  request via a standard Authorization: Bearer header. Logging out invalidates the
+  token.
+- Browsing events and tickets should not require auth.
+- You can search events by title (case-insensitive, partial match).
+- There should be an endpoint to list only tickets that are still purchasable
+  (quantity available > 0) across all events, also filterable by event title, and
+  it should include which event each ticket belongs to.
+- Adding a ticket to the cart takes one unit and decrements that ticket's
+  available quantity; it should fail cleanly if the ticket doesn't exist or is
+  sold out.
+- Removing a ticket from the cart removes one unit (if there are multiple of the
+  same ticket in the cart, only one is removed per call) and gives the quantity
+  back.
+- Checkout takes a credit card number, validates it (proper length and a Luhn
+  checksum — don't accept just any string of digits), and if valid moves
+  everything in the cart into the user's wallet (generating a barcode for each)
+  and empties the cart. It should fail if the cart is empty or the card is
+  invalid. Don't actually persist the raw card number from checkout.
+- There should be a separate endpoint to save a credit card on the user's profile
+  (same validation) so it can be reused later, and the user's profile should
+  expose whatever card is currently saved.
+- A user's profile endpoint should return their basic info plus their current
+  cart, how many tickets are in their wallet, and the full wallet contents.
+- Event and venue images should be served by this same server as static files,
+  and any image URL returned by the API should be a full absolute URL built from
+  the incoming request's host (so it keeps working regardless of port or if it's
+  behind a proxy — respect X-Forwarded-Proto if present).
+- I want to be able to simulate an unreliable backend for testing a client
+  against it: two env vars, one that's a percentage chance any given request just
+  fails outright before doing anything, and one that adds a fixed artificial
+  delay to every request.
+
+API design
+- Make this idiomatic REST, not a thin RPC layer: proper resource paths, HTTP
+  verbs (GET/POST/PUT/DELETE), and real HTTP status codes for outcomes (401 for
+  auth failures, 404 for missing resources, 409 for a sold-out ticket, 400 for
+  validation failures like a bad card or empty cart, 500 for the simulated
+  failure) — not everything wrapped in a 200 with an error field inside.
+- Keep error responses in a consistent shape, something like
+  { "error": { "text": "..." } }.
+- Write it all in a single, reasonably organized server file — this is a small
+  demo, it doesn't need a big folder structure, ORM, or framework beyond a
+  minimal web framework (Express is fine) plus dotenv for config.
+
+Project setup
+- Use Node with ES modules ("type": "module" in package.json).
+- Name the package "marketplace-backend" with a description that accurately
+  reflects it's a REST API for events/tickets.
+- Seed data (events/tickets/venues/users and the event/venue images) can be
+  invented/sample data — a handful of events across different genres, a dozen or
+  so venues, three demo users, is plenty.
+- Add a .env.example documenting the two simulation env vars (and the port), and
+  a sensible .gitignore (node_modules, .env, OS/log cruft).
+- Write a README that documents how to run it and lists every endpoint (method,
+  path, whether auth is required, what it does), plus a short curl walkthrough
+  covering the main flow: log in, browse events, add a ticket to the cart, check
+  out, then view the wallet.
+
+Once it's built, install dependencies and actually run the server, then smoke-test
+the whole flow end-to-end with curl — browsing, searching, fetching a single
+event, a failed login, a successful login, adding to cart, checking out, viewing
+the resulting wallet, fetching a served image, logging out, and confirming the
+token no longer works afterward — before calling it done.

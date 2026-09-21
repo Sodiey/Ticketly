@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "usr_1",
+      "firstName": "First",
+      "lastName": "User",
+      "age": 36,
+      "username": "first",
+      "password": "user"
+    },
+    {
+      "id": "usr_2",
+      "firstName": "Second",
+      "lastName": "User",
+      "age": 29,
+      "username": "second",
+      "password": "user"
+    },
+    {
+      "id": "usr_3",
+      "firstName": "Third",
+      "lastName": "User",
+      "age": 30,
+      "username": "third",
+      "password": "user"
+    }
+  ]
+}
