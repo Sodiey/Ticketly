@@ -4,6 +4,13 @@ A native Android (Kotlin + Jetpack Compose) client for a small ticket marketplac
 browse events, log in, add tickets to a cart, check out, and see what you bought.
 Built as a personal project, backed by a mock REST API.
 
+## Screenshots
+
+<p>
+  <img src="screenshots/home-light.png" width="280" alt="Events screen, light theme" />
+  <img src="screenshots/home-dark.png" width="280" alt="Events screen, dark theme" />
+</p>
+
 ## Project layout
 
 - `app/` - the Android client (MVVM: Compose UI -> ViewModel -> Repository -> Retrofit).
@@ -26,6 +33,10 @@ Built as a personal project, backed by a mock REST API.
 
 This runs on `http://localhost:4000` by default. Demo credentials (see
 `backend/users.json`): `first` / `user`, `second` / `user`, `third` / `user`.
+
+For checkout, the backend only validates card numbers (length + Luhn checksum) -
+it doesn't charge anything real, so any Luhn-valid number works, e.g. the
+standard test Visa number `4242 4242 4242 4242`.
 
 **2. Run the Android app** on an emulator (it talks to the backend via
 `10.0.2.2:4000`, the emulator's alias for the host machine's localhost):
