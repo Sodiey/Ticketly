@@ -1,0 +1,106 @@
+PROMPTS.txt
+============
+
+This project was built with Claude Code (Anthropic's CLI coding agent) as a
+collaborator across a long, multi-session conversation. What follows is a curated
+selection of prompts from that session, lightly edited for clarity and grammar
+while preserving the actual technical substance of each one, organized by theme,
+focused on the parts that best show how the AI was actually used: setting
+architecture direction, reviewing and pushing back on its output, catching real
+bugs, and making explicit scope/tradeoff calls - not just accepting whatever it
+produced.
+
+------------------------------------------------------------
+SETTING ARCHITECTURE DIRECTION
+------------------------------------------------------------
+
+"Apply clean architecture principles here, but don't over-engineer it. Implement
+what's needed in EventsViewModel to fetch all the events from the backend - you
+may need something in the repository layer, or possibly a use-case class; use
+your judgment on that."
+
+"Let's revisit DateChipsRow - the current approach feels hacky, and it only
+covers a week. I want a proper implementation: the UI shows a few days at a
+time, but should be scrollable for more. How many days should we actually load,
+and is there a performance-conscious way to do that, or is that overkill for
+this?"
+
+"Let's go with six months, but the UI shouldn't be responsible for calculating
+that range - it should just receive the list and render it. That's it."
+
+------------------------------------------------------------
+REVIEWING & PUSHING BACK ON THE AI'S OWN DESIGN CHOICES
+------------------------------------------------------------
+
+"Could we use stateIn here instead?"
+
+"I'm skeptical about the OwnedTicket data class - there's real overlap with the
+existing Ticket class. Can we make this scale better, e.g. through inheritance
+between the two?" (led to correcting the premise - Kotlin data classes can't
+extend each other - and introducing a shared TicketBase interface instead)
+
+"I'm not happy with how the top bar is implemented in MainActivity - it's two
+separate if statements. Is there a cleaner way to structure this?"
+
+"I don't like this - the private Screen enum is an unnecessary extra type, and
+its placement doesn't make sense. We already have navigation route classes like
+DetailRoute and EventsRoute - can't we use those instead?"
+
+"This means an extra eventsRepository.getEvents() call - could we cache that?
+Though on the Events screen itself I always want to hit the live endpoint, never
+a cache. The cache should only apply to the similar-events lookup on the Detail
+screen, correct?"
+
+"What's actually the difference between my proposed approach and yours? Keep the
+explanation simple."
+
+"Could we cache this instead of hitting the network every time - and if so,
+what would we lose by doing that?"
+
+------------------------------------------------------------
+CATCHING BUGS AND CORRECTING THE AI
+------------------------------------------------------------
+
+"Here's the crash log: [stack trace]. Figure out the root cause before fixing
+it."
+
+"I'm getting a crash when tapping Buy on a ticket - [stack trace: 'Key
+tkt_40_01 was already used' in LazyColumn]."
+
+"Also, the back button on the Cart screen isn't going back - it's taking me to
+the Home screen instead."
+
+"I want to change how we display quantityAvailable - it should always show
+'Only X available,' with an emoji that reflects the actual count."
+
+------------------------------------------------------------
+EXPLICIT SCOPE CALLS
+------------------------------------------------------------
+
+"Leave that as-is - don't touch it, don't refactor it while you're in there."
+
+"Do you think logging or instrumentation should be part of the project too?"
+(asked, then agreed it was out of scope for now)
+
+------------------------------------------------------------
+PROCESS, DOCUMENTATION & FINAL REVIEW
+------------------------------------------------------------
+
+"Let's talk about testing - do we need any updates to the androidTest folder
+given the recent changes? Make sure the test suite is passing."
+
+"Do the existing tests cover the essential cases? Should we also add a
+ViewModel test for the Cart screen?"
+
+"Do a final check across the app to confirm everything's in order before
+submission - review it the way a senior engineer would, be honest, not
+reassuring." (requested before submission; the review found and I fixed 3
+failing tests and a dead click handler that had gone unnoticed)
+
+"Review the documentation files and CLAUDE.md to confirm they still make sense
+for this app's actual scope - I want to avoid overengineering the docs
+themselves."
+
+"Yes, go ahead and draft it." (in response to being asked whether to draft this
+very PROMPTS.txt file, pulling from the session's actual prompts, after
+questioning whether it was still needed alongside SPEC.md)
