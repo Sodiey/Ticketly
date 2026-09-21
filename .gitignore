@@ -1,0 +1,21 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+
+
+# Backend
+
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+.claude/settings.local.json

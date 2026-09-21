@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The assignment backend is a plain-HTTP dev server reached via the Android
+    emulator's host-loopback alias, so cleartext traffic is allowed for that
+    address only - not the whole app.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>
