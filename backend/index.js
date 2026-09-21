@@ -290,7 +290,7 @@ function requireAuth(req, res, next) {
   next();
 }
 
-/** Applies the simulated latency/error-rate to every /api route, mirroring the GraphQL backend's mock behavior. */
+/** Applies the simulated latency/error-rate to every /api route. */
 async function mockBehavior(_req, res, next) {
   await beforeEveryOp();
   if (shouldMockFail()) {

@@ -61,7 +61,6 @@ class EventsViewModel @Inject constructor(
     ) { result, date, priceRange ->
         if (result is EventsUiState.Success) {
             val eventsOnDate = result.data.events
-//            val eventsOnDate = result.data.events.filter { it.startsAt.toLocalDate() == date }
             val filteredEvents = eventsOnDate.filter { event ->
                 // Matches on the event's cheapest ticket - "starting from $X" - not every tier.
                 val cheapestPriceCents = event.tickets.minOfOrNull { it.priceCents } ?: return@filter false

@@ -2,7 +2,7 @@
 
 Guidance for Claude Code (or any AI coding agent) working in this repository: a
 native Android (Kotlin + Jetpack Compose) client for a mock REST ticket
-marketplace, built as a take-home assignment. Full architecture rationale lives in
+marketplace. Full architecture rationale lives in
 `documentation/DESIGN.md`; the original plan lives in `documentation/SPEC.md`;
 official Jetpack Compose reference material lives in
 `documentation/ComposeDocumentation.md`. This file is the short, always-loaded set
@@ -10,7 +10,7 @@ of operational rules - read those for anything not covered here.
 
 ## Hard rules
 
-- **Never modify anything under `backend/`.** The assignment explicitly forbids
+- **Never modify anything under `backend/`.** The project explicitly forbids
   changing the backend; treat it as read-only reference (`backend/index.js` for
   routes, `backend/README.md` for the endpoint table, the `.json` files for sample
   data). If something about it seems like it needs to change, note it in
