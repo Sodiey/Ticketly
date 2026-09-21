@@ -16,7 +16,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
  * 10.0.2.2 is the Android emulator's alias for the host machine's localhost, where
- * `npm start` runs the assignment backend (see backend/README.md).
+ * `npm start` runs the backend (see backend/README.md).
  */
 private const val API_BASE_URL = "http://10.0.2.2:4000/"
 
