@@ -35,7 +35,7 @@ class EventsViewModelTest {
 
     @Test
     fun `blank query fetches the catalog instead of searching`() = runTest {
-        fakeEventsRepository.events = listOf(event(id = "1", title = "Rock Night"))
+        fakeEventsRepository.events = listOf(event(id = "1", title = "Rock Night", tickets = listOf(ticket(5_000))))
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
@@ -51,7 +51,7 @@ class EventsViewModelTest {
 
     @Test
     fun `non-blank query searches with the trimmed query`() = runTest {
-        fakeEventsRepository.events = listOf(event(id = "1", title = "Rock Night"))
+        fakeEventsRepository.events = listOf(event(id = "1", title = "Rock Night", tickets = listOf(ticket(5_000))))
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
@@ -96,8 +96,8 @@ class EventsViewModelTest {
 
     @Test
     fun `changing the query cancels the previous in-flight search`() = runTest {
-        val rockEvent = event(id = "1", title = "Rock Night")
-        val popEvent = event(id = "2", title = "Pop Party")
+        val rockEvent = event(id = "1", title = "Rock Night", tickets = listOf(ticket(5_000)))
+        val popEvent = event(id = "2", title = "Pop Party", tickets = listOf(ticket(5_000)))
         fakeEventsRepository.events = listOf(rockEvent, popEvent)
         fakeEventsRepository.searchEventsDelayMillis = { query -> if (query == "rock") 1_000L else 0L }
         val viewModel = createViewModel()
